@@ -1,18 +1,19 @@
 <!--
  * @Author: Tmier
  * @Date: 2021-06-02 09:22:04
- * @LastEditTime: 2021-06-02 16:40:20
+ * @LastEditTime: 2021-06-02 22:24:25
  * @Description: 
  * @LastModifiedBy: Tmier
 -->
 <template>
+<!-- 包裹动画 -->
   <transition name="fade" v-if="visible">
     <div>
+      <!-- 遮罩大背景,且通过监听window.resize事件进行自适应 -->
       <div class="bg-mask" :style="{width: bodyWidth + 'px', height: bodyHeight + 'px'}" @click="closeAll">
-        <!-- <div class="content-box"></div> -->
       </div>
+      <!-- 图片显示主题 自适应宽高且监听滚轮以进行缩放-->
       <div class="content-box-body" :style="{width: bodyWidth + 'px', height: (bodyHeight - 100) + 'px'}" @click="closeAll" @mousewheel="handleMousewheel">
-        <!-- <slot></slot> -->
         <img
           :src="imgURL"
           alt
@@ -24,25 +25,25 @@
         }"
         />
       </div>
+      <!-- 工具按钮 -->
       <div class="content-box-footer">
-        <!-- <slot name="footer"></slot> -->
-        <abbr title="放大" @click="enLarge">
+        <abbr title="放大" @click="enLarge" v-if="_buttonOptions.enLargeButton">
           <span class="iconfont icon-fangda icon"></span>
         </abbr>
-        <abbr title="缩小" @click="narrowImg">
+        <abbr title="缩小" @click="narrowImg" v-if="_buttonOptions.narrowImgButton">
           <span class="iconfont icon-suoxiao icon"></span>
         </abbr>
-        <abbr title="还原" @click="initImg">
+        <abbr title="还原" @click="initImg" v-if="_buttonOptions.initImgButton">
           <span class="iconfont icon-huanyuan icon"></span>
         </abbr>
 
-        <abbr title="左转" @click="rotate('left')">
+        <abbr title="左转" @click="rotate('left')" v-if="_buttonOptions.leftButton">
           <span class="iconfont icon-xiangyouxuanzhuan icon"></span>
         </abbr>
-        <abbr title="右转" @click="rotate('right')">
+        <abbr title="右转" @click="rotate('right')" v-if="_buttonOptions.rightButton">
           <span class="iconfont icon-xiangzuoxuanzhuan icon"></span>
         </abbr>
-        <abbr title="下载">
+        <abbr title="下载" v-if="_buttonOptions.downloadButton">
           <span class="iconfont icon-xiazai icon"></span>
         </abbr>
       </div>
@@ -57,26 +58,50 @@ export default {
   components: {},
   data() {
     return {
+      // 动画开关
       aniOpenFlag: true,
+      // 当前图片相关属性
       activeImg: {
         scale: 1,
         rotate: 0
       },
-      mockSrc: require('../../assets/logo.png'),
+      // 浏览器宽高
       bodyWidth: window.innerWidth,
       bodyHeight: window.innerHeight
     }
   },
   props: {
+    // 按钮配置
+    buttonOptions: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    },
+    // 图片URL地址
     imgData: {
       default: ''
     },
+    // 遮罩开关
     visible: {
       type: Boolean,
       required: true
     }
   },
   computed: {
+    // 按钮配置,合并传递的数据
+    _buttonOptions() {
+      let initOptions = {
+        enLargeButton: true,
+        narrowImgButton: true,
+        initImgButton: true,
+        leftButton: true,
+        rightButton: true,
+        downloadButton: true
+      }
+      return Object.assign(initOptions, this.buttonOptions)
+    },
+    // 图片地址
     imgURL() {
       if (Object.prototype.toString.call(this.imgData) == '[object String]') {
         return this.imgData
@@ -87,20 +112,24 @@ export default {
       //   return ''
       // }
     },
+    // 动画显隐,一般全开,主要在恢复原形时暂时为none
     aniName() {
       return this.aniOpenFlag ? 'all' : 'none'
     }
   },
   created() {
+    // 监听窗口变化,随时改变遮罩与图片大小
     window.addEventListener('resize', this.initMask)
   },
   methods: {
+    // 左转右转方法
     rotate(direction) {
       this.aniOpenFlag = true
       let rotate = this.activeImg.rotate
       rotate = direction == 'right' ? rotate + 90 : rotate - 90
       this.activeImg.rotate = rotate
     },
+    // 缩小方法
     narrowImg() {
       let scale = this.activeImg.scale
       scale -= 0.1
@@ -109,6 +138,7 @@ export default {
       }
       this.activeImg.scale = scale
     },
+    // 放大方法
     enLarge() {
       let scale = this.activeImg.scale
       scale += 0.1
@@ -117,6 +147,7 @@ export default {
       }
       this.activeImg.scale = scale
     },
+    // 监听滚轮,放大缩小
     handleMousewheel(e) {
       if (e.deltaY < 0) {
         this.enLarge()
@@ -125,10 +156,12 @@ export default {
         this.narrowImg()
       }
     },
+    // 初始化宽高
     initMask() {
       this.bodyWidth = window.innerWidth
       this.bodyHeight = window.innerHeight
     },
+    // 图片恢复方法
     initImg() {
       this.aniOpenFlag = false
       this.activeImg = {
@@ -136,6 +169,7 @@ export default {
         rotate: 0
       }
     },
+    // 关闭方法
     closeAll() {
       this.initImg()
       this.$emit('close')

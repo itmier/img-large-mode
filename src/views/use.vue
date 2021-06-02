@@ -1,7 +1,7 @@
 <!--
  * @Author: Tmier
  * @Date: 2021-06-02 15:35:52
- * @LastEditTime: 2021-06-02 16:18:55
+ * @LastEditTime: 2021-06-02 22:44:40
  * @Description: 
  * @LastModifiedBy: Tmier
 -->
@@ -22,7 +22,10 @@ export default {
   methods: {
     openMask() {
       this.$_openLargeMode.show({
-        imgData: `https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f06e07b54c2a423d82e760a8f081e5ff~tplv-k3u1fbpfcp-watermark.image`
+        imgData: `https://user-gold-cdn.xitu.io/2019/12/7/16ee08923006f96b?imageView2/0/w/1280/h/960/format/webp/ignore-error/1`,
+        buttonOptions: {
+          downloadButton: false
+        }
       })
     }
   }
