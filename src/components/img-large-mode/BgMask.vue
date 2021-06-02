@@ -1,7 +1,7 @@
 <!--
  * @Author: Tmier
  * @Date: 2021-06-02 09:22:04
- * @LastEditTime: 2021-06-02 15:01:30
+ * @LastEditTime: 2021-06-02 16:40:20
  * @Description: 
  * @LastModifiedBy: Tmier
 -->
@@ -14,7 +14,7 @@
       <div class="content-box-body" :style="{width: bodyWidth + 'px', height: (bodyHeight - 100) + 'px'}" @click="closeAll" @mousewheel="handleMousewheel">
         <!-- <slot></slot> -->
         <img
-          :src="mockSrc"
+          :src="imgURL"
           alt
           class="img-custom"
           ref="customImg"
@@ -68,12 +68,25 @@ export default {
     }
   },
   props: {
+    imgData: {
+      default: ''
+    },
     visible: {
       type: Boolean,
       required: true
     }
   },
   computed: {
+    imgURL() {
+      if (Object.prototype.toString.call(this.imgData) == '[object String]') {
+        return this.imgData
+      } else {
+        return ''
+      }
+      // if (Object.prototype.toString.call(this.imgData) == '[object Array]') {
+      //   return ''
+      // }
+    },
     aniName() {
       return this.aniOpenFlag ? 'all' : 'none'
     }
@@ -83,7 +96,7 @@ export default {
   },
   methods: {
     rotate(direction) {
-      this.aniOpenFlag = true;
+      this.aniOpenFlag = true
       let rotate = this.activeImg.rotate
       rotate = direction == 'right' ? rotate + 90 : rotate - 90
       this.activeImg.rotate = rotate
@@ -153,17 +166,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  top: 0;
+  top: 20px;
   img {
     // width: 100%;
     max-width: 100%;
     max-height: 100%;
-  }
-  .mock {
-    width: 800px;
-    height: 500px;
-    background: coral;
-    opacity: 0.6;
   }
 }
 .content-box-footer {
