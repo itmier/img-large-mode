@@ -1,7 +1,7 @@
 <!--
  * @Author: Tmier
  * @Date: 2021-06-02 09:22:04
- * @LastEditTime: 2021-06-02 22:24:25
+ * @LastEditTime: 2021-06-03 10:32:01
  * @Description: 
  * @LastModifiedBy: Tmier
 -->
@@ -43,7 +43,7 @@
         <abbr title="右转" @click="rotate('right')" v-if="_buttonOptions.rightButton">
           <span class="iconfont icon-xiangzuoxuanzhuan icon"></span>
         </abbr>
-        <abbr title="下载" v-if="_buttonOptions.downloadButton">
+        <abbr title="下载" v-if="_buttonOptions.downloadButton" @click="toDownImg">
           <span class="iconfont icon-xiazai icon"></span>
         </abbr>
       </div>
@@ -53,6 +53,7 @@
 
 <script>
 //import x from ''
+import {downFile} from '@/components/img-large-mode/utils/index.js' 
 export default {
   name: 'bg-mask',
   components: {},
@@ -122,6 +123,10 @@ export default {
     window.addEventListener('resize', this.initMask)
   },
   methods: {
+    // 下载图片
+    toDownImg() {
+      downFile(this.imgURL)
+    },
     // 左转右转方法
     rotate(direction) {
       this.aniOpenFlag = true
